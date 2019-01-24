@@ -1,4 +1,4 @@
-import pygame
+import pygame,sys
 import time
 import random
 pygame.init()
@@ -11,7 +11,6 @@ green = (0, 200, 0)
 bright_red = (255, 0, 0)
 bright_green = (0, 255, 0)
 block_color = (53, 115, 255)
-#crash_sound = pygame.mixer.Sound("crash.mp3")
 car_width = 55
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('Car Dodge Game')
@@ -19,6 +18,12 @@ clock = pygame.time.Clock()
 gameIcon = pygame.image.load('carIcon.png')
 backgroundImage = pygame.image.load("background.png")
 backgroundImage = pygame.transform.scale(backgroundImage, (800, 600))
+introImage = pygame.image.load("new.png")
+introImage = pygame.transform.scale(introImage, (800, 600))
+crashImage = pygame.image.load("dod.png")
+crashImage = pygame.transform.scale(crashImage, (800, 600))
+winnerImage = pygame.image.load("Winner.png")
+winnerImage = pygame.transform.scale(winnerImage, (800, 600))
 gameDisplay.blit(backgroundImage, (0, 0))
 carImg = pygame.image.load("racecar.png")
 carImg = pygame.transform.scale(carImg, (60, 100))
@@ -53,31 +58,38 @@ pygame.display.set_icon(gameIcon)
 pause = False
 crash = True
 def score(count):
-    font = pygame.font.SysFont("comicsansms", 25)
+    font = pygame.font.SysFont("romans", 25)
     text = font.render("SCORE: " + str(count), True, red)
     gameDisplay.blit(text, (0, 0))
+    if count >= 15:
+        gameDisplay.blit(winnerImage, (0, 0))
+        pygame.display.update()
+        clock.tick(555)
+        
 def things(thingx, thingy, thingw, thingh, color, enemyC):
     gameDisplay.blit(enemy, [thingx, thingy, thingw, thingh])
 def car(x, y):
     gameDisplay.blit(carImg, (x, y))
 def text_objects(text, font):
-    textSurface = font.render(text, True, black)
+    textSurface = font.render(text, True, white)
     return textSurface, textSurface.get_rect()
 def crash():
+    gameDisplay.blit(crashImage, (0, 0))
     largeText = pygame.font.SysFont("romans", 115)
-    TextSurf, TextRect = text_objects("You Crashed", largeText)
-    TextRect.center = ((display_width / 2), (display_height / 2))
-    gameDisplay.blit(TextSurf, TextRect)
-
+    
+    #TextSurf, TextRect = text_objects("You Crashed", largeText)
+    #TextRect.center = ((display_width / 2), (display_height / 2))
+    #gameDisplay.blit(TextSurf, TextRect)
+   
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-
+       
         button("Play Again", 150, 450, 100, 50, green, bright_green, game_loop)
         button("Quit", 550, 450, 100, 50, red, bright_red, quitgame)
-
+        
         pygame.display.update()
         clock.tick(15)
 
@@ -92,7 +104,7 @@ def button(msg, x, y, w, h, ic, ac, action=None):
             action()
     else:
         pygame.draw.rect(gameDisplay, ic, (x, y, w, h))
-    smallText = pygame.font.SysFont("comicsansms", 20)
+    smallText = pygame.font.SysFont("romans", 20)
     textSurf, textRect = text_objects(msg, smallText)
     textRect.center = ((x + (w / 2)), (y + (h / 2)))
     gameDisplay.blit(textSurf, textRect)
@@ -111,10 +123,11 @@ def game_intro():
                 pygame.quit()
                 quit()
 
-        gameDisplay.fill(white)
+        gameDisplay.blit(introImage, (0, 0))
+        #gameDisplay.fill(white)
         largeText = pygame.font.SysFont("romans", 115)
         TextSurf, TextRect = text_objects("Car Dodge", largeText)
-        TextRect.center = ((display_width / 2), (display_height / 2))
+        TextRect.center = ((display_width / 2), (display_height / 2.7))
         gameDisplay.blit(TextSurf, TextRect)
 
         button("LET PLAY!", 150, 450, 100, 50, green, bright_green, game_loop)
